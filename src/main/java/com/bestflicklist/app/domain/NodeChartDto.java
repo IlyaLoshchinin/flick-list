@@ -1,11 +1,22 @@
 package com.bestflicklist.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +37,8 @@ public class NodeChartDto {
   private final long releaseDate;
   private final long popularity;
 
-
-  public NodeChartDto(String id, long ranking, long userVoted, long releaseDate, long popularity) {
+  @JsonCreator
+  public NodeChartDto(@JsonProperty("id") String id,@JsonProperty("ranking") long ranking, @JsonProperty("user_voted") long userVoted,@JsonProperty("release_date") long releaseDate,@JsonProperty("popularity") long popularity) {
     this.id = id;
     this.ranking = ranking;
     this.userVoted = userVoted;
@@ -42,6 +53,7 @@ public class NodeChartDto {
   public long getRanking() {
     return ranking;
   }
+
 
   public List<GenresRanking> getGenresRankingList() {
     return genresRankingList;
@@ -59,22 +71,33 @@ public class NodeChartDto {
     return popularity;
   }
 
-  public NodeChartDto addGenresRanking(Genre genre, int order){
-    genresRankingList.add(new GenresRanking(genre.name().toLowerCase(),order));
+  @JsonProperty("genres_ranking")
+  public void setGenresRankingList(List<GenresRanking> list){
+    genresRankingList.clear();
+    genresRankingList.addAll(list);
+  }
+
+  @JsonSetter
+  public NodeChartDto addGenresRanking(@JsonProperty("genre") Genre genre,@JsonProperty("order") int order){
+    genresRankingList.add(new GenresRanking(genre,order));
     return this;
   }
 
-  private class GenresRanking {
 
-    private final String genre;
+
+ static private class GenresRanking {
+
+    private final Genre genre;
     private final int order;
 
-    private GenresRanking(String genre, int order) {
+
+    @JsonCreator
+    private GenresRanking(@JsonProperty("genre") Genre genre,@JsonProperty("order") int order) {
       this.genre = genre;
       this.order = order;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
       return genre;
     }
 

@@ -22,31 +22,7 @@ public class ApplicationTests {
 
   @Test
   public void contextLoads() {
-    ObjectMapper mapper = new ObjectMapper();
 
-    //For testin
-
-    ImdbChartsDto root = new ImdbChartsDto();
-    NodeChartDto tt12323 = new NodeChartDto("tt12323", 24, 32323, 2015, 25);
-    tt12323.addGenresRanking(Genre.Action, 20);
-    root.getTop().getMovies().add(tt12323);
-    root.getMostRated().getTvShows().add(tt12323);
-    try {
-      //Convert object to JSON string and save into file directly
-      //mapper.writeValue(new File("user.json"), user);
-
-      //Convert object to JSON string
-//		  String jsonInString = mapper.writeValueAsString(user);
-//			System.out.println(jsonInString);
-
-      //Convert object to JSON string and pretty print
-      String jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
-      System.out.println(jsonInString);
-
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
   }
 
